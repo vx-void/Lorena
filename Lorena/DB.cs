@@ -56,5 +56,71 @@ namespace Lorena
                 }
             }
         }
+
+
+        public void Insert(Salon salon)
+        {
+            using (var connection = new SQLiteConnection(_connectionString))
+            {
+                connection.Open();
+                string sqlCommandString = @"
+                INSERT INTO Salon(Name, Discount, HasDependency, Description, ParentId)
+                VALUES (@Name, @Discount, @HasDependency, @Description, @ParentId);";
+
+                ExecuteNonQuery(connection, sqlCommandString, new SQLiteParameter[]
+                {
+                    new SQLiteParameter("@Name", salon.Name),
+                    new SQLiteParameter("@Discount", salon.Discount),
+                    new SQLiteParameter("@HasDependency", salon.HasDependency ? 1 : 0),
+                    new SQLiteParameter("@Description", salon.Description ?? (object)DBNull.Value),
+                    new SQLiteParameter("@ParentId", salon.ParentId ?? (object)DBNull.Value)
+                });
+            }
+        }
+
+        public Salon SelectSalonById(int Id)
+        {
+            Salon salon = null;
+            using (var connection = new SQLiteConnection(_connectionString))
+            {
+                connection.Open();
+                string query = @"SELECT * FROM Salon WHERE Id = @Id";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.CommandText = query;
+                    command.Parameters.Add(new SQLiteParameter("@Id", Id));
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            salon = new Salon(
+                                db: this,
+                                name: reader["Name"].ToString(),
+                                discount: Convert.ToInt32(reader["Discount"]),
+                                hasDependency: Convert.ToBoolean(reader["HasDependency"]),
+                                description: reader["Description"].ToString(),
+                                parentId: reader["ParentId"] != DBNull.Value ? Convert.ToInt32(reader["ParentId"]) : (int?)null
+                            );
+                        }
+                    }
+                }
+            }
+            return salon;
+        }
+
+
+        private void ExecuteNonQuery(SQLiteConnection connection, string query, SQLiteParameter[] parameters = null)
+        {
+            using (var command = new SQLiteCommand(query, connection))
+            {
+                if (parameters != null)
+                {
+                    command.Parameters.AddRange(parameters);
+                }
+                command.ExecuteNonQuery();
+            }
+        }
+
     }
 }
