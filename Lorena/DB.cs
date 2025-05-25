@@ -130,6 +130,62 @@ namespace Lorena
         }
 
 
+        public void InsertCalculateTable(int salonId, double price, int discount, int parentalDiscount, double finalPrice)
+        {
+
+            using (var connection = new SQLiteConnection(_connectionString))
+            {
+                string query = @"INSERT INTO CalculationTable(SalonId, Price, Discount, ParentDiscount, FinalPrice) 
+                VALUES(@salonId, @price, @discount, @parentalDiscount, @finalPrice)
+                ON CONFLICT(SalonId) DO UPDATE SET 
+                    Price = excluded.Price,
+                    Discount = excluded.Discount,
+                    ParentDiscount = excluded.ParentDiscount,
+                    FinalPrice = excluded.FinalPrice";
+                connection.Open();
+                ExecuteNonQuery(connection, query, new SQLiteParameter[]
+                    {
+                        new SQLiteParameter("@salonId", salonId),
+                        new SQLiteParameter("@price", price),
+                        new SQLiteParameter("@discount", discount),
+                        new SQLiteParameter("@parentalDiscount", parentalDiscount),
+                        new SQLiteParameter("@finalPrice", finalPrice)
+                    }
+                    );
+            }
+
+        }
+
+        public CalculateTable GetCalculateTable(int salonId)
+        {
+            CalculateTable ct = null;
+            using (var connection = new SQLiteConnection(_connectionString))
+            {
+
+                connection.Open();
+                string query = @"SELECT * FROM CalculationTable WHERE SalonId = @salonId";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.CommandText = query;
+                    command.Parameters.Add(new SQLiteParameter("@salonId", salonId));
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            ct = new CalculateTable(
+                                salonId: Convert.ToInt32(reader["SalonId"]),
+                                price: (double)reader["Price"],
+                                discount: Convert.ToInt32(reader["Discount"]),
+                                parentDiscount: Convert.ToInt32(reader["ParentDiscount"]),
+                                finalPrice: (double)reader["FinalPrice"]
+                            );
+                        }
+                    }
+                }
+            }
+            return ct;
+        }
+
         private void ExecuteNonQuery(SQLiteConnection connection, string query, SQLiteParameter[] parameters = null)
         {
             using (var command = new SQLiteCommand(query, connection))

@@ -31,14 +31,14 @@ namespace LorenaNUnitTest
             Assert.That(DbIsExist, Is.EqualTo(true));
         }
 
+        [TestCase(0)]
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(3)]
         [TestCase(4)]
-        [TestCase(5)]
         public void InsertSalonToDatabase(int id)
         {
-            DataInitialize.DefaultData(_db);
+            //DataInitialize.DefaultData(_db);
             Salon salon = _db.SelectSalonById(id);
             Assert.That("Миасс", Is.EqualTo(salon.Name));
             Assert.That("Амелия", Is.EqualTo(salon.Name));

@@ -34,6 +34,32 @@ namespace Lorena
                 ParentId = parentId;
             }
 
+
         
+    }
+
+    public class CalculateTable
+    {
+        public int SalonId { get; private set; }
+        public double Price { get; private set; }
+
+        [Range(0, 100)]
+        public int Discount { get; private set; }
+        [Range(0, 100)]
+        public int ParentDiscount { get; private set; }
+
+        public double FinalPrice { get; private set; }
+
+
+        public CalculateTable(int salonId, double price, int discount, int parentDiscount, double? finalPrice)
+        {
+            SalonId = salonId;
+            Price = price;
+            Discount = discount;
+            ParentDiscount = parentDiscount;
+            FinalPrice = finalPrice is null ?
+                price - (price * ((double)(discount + parentDiscount) / 100))
+                : (double)finalPrice;
+        }
     }
 }
