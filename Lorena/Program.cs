@@ -35,8 +35,6 @@
             List<CalculateTable> ctList = DataInitialize.GetCalculateTableList(db, db.SelectCountFromSalon());
             GetCalculateTable(db, ctList);
             Console.ReadLine();
-
-
         }
 
 
