@@ -57,7 +57,6 @@ namespace Lorena
             }
         }
 
-
         public void Insert(Salon salon)
         {
             using (var connection = new SQLiteConnection(_connectionString))
@@ -129,7 +128,6 @@ namespace Lorena
             }
         }
 
-
         public void InsertCalculateTable(int salonId, double price, int discount, int parentalDiscount, double finalPrice)
         {
 
@@ -200,7 +198,6 @@ namespace Lorena
             }
             return count;
         }
-
 
         private void ExecuteNonQuery(SQLiteConnection connection, string query, SQLiteParameter[] parameters = null)
         {
