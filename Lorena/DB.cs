@@ -109,6 +109,26 @@ namespace Lorena
             return salon;
         }
 
+        public void UpdateParentId(string name, string parentName)
+        {
+            if (parentName != null)
+            {
+                string query = "UPDATE Salon " +
+                  "SET ParentID = (Select Id From Salon WHERE Name = @parentName) " +
+                  "WHERE Name = @name";
+                using (var connection = new SQLiteConnection(_connectionString))
+                {
+                    connection.Open();
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@parentName", parentName);
+                        command.Parameters.AddWithValue("@name", name);
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
 
         private void ExecuteNonQuery(SQLiteConnection connection, string query, SQLiteParameter[] parameters = null)
         {
