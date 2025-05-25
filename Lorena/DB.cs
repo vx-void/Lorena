@@ -186,6 +186,22 @@ namespace Lorena
             return ct;
         }
 
+        public int SelectCountFromSalon()
+        {
+            int count = 0;
+            using (var connection = new SQLiteConnection(_connectionString))
+            {
+                string query = "SELECT COUNT(*) FROM Salon";
+                connection.Open();
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    count = Convert.ToInt32(command.ExecuteScalar());
+                }
+            }
+            return count;
+        }
+
+
         private void ExecuteNonQuery(SQLiteConnection connection, string query, SQLiteParameter[] parameters = null)
         {
             using (var command = new SQLiteCommand(query, connection))
