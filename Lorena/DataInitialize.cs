@@ -41,6 +41,15 @@ namespace Lorena
 
         }
 
+        public static List<CalculateTable> GetCalculateTableList(DB db, int iteration)
+        {
+            List<CalculateTable> ctList = new List<CalculateTable>();
+            for (int i = 1; i <= iteration; i++)
+            {
+                ctList.Add(db.GetCalculateTable(i));
+            }
+            return ctList;
+        }
 
     }
 }

@@ -33,9 +33,6 @@ namespace Lorena
                 Description = description;
                 ParentId = parentId;
             }
-
-
-        
     }
 
     public class CalculateTable
@@ -49,7 +46,6 @@ namespace Lorena
         public int ParentDiscount { get; private set; }
 
         public double FinalPrice { get; private set; }
-
 
         public CalculateTable(int salonId, double price, int discount, int parentDiscount, double? finalPrice)
         {
